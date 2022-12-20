@@ -137,7 +137,11 @@ private:
 	bool _vtol_tailsitter{false};
 	bool _vtol_in_transition_mode{false};
 
+	int32_t inp_signal;
+
 	uint8_t _quat_reset_counter{0};
+	float rel_time;
+	hrt_abstime start_time;
 
 	DEFINE_PARAMETERS(
 		(ParamFloat<px4::params::MC_ROLL_P>) _param_mc_roll_p,
@@ -160,6 +164,7 @@ private:
 		(ParamInt<px4::params::MPC_THR_CURVE>) _param_mpc_thr_curve,				/**< throttle curve behavior */
 
 		(ParamInt<px4::params::MC_AIRMODE>) _param_mc_airmode,
+		(ParamInt<px4::params::MC_INPUT_SOURCE>) _input_source,
 		(ParamFloat<px4::params::MC_MAN_TILT_TAU>) _param_mc_man_tilt_tau
 	)
 };

@@ -67,6 +67,8 @@ MulticopterAttitudeControl::MulticopterAttitudeControl(bool vtol) :
 	}
 
 	parameters_updated();
+	rel_time = 0.0f;
+	start_time=0;
 }
 
 MulticopterAttitudeControl::~MulticopterAttitudeControl()
@@ -98,6 +100,7 @@ MulticopterAttitudeControl::parameters_updated()
 						radians(_param_mc_yawrate_max.get())));
 
 	_man_tilt_max = math::radians(_param_mpc_man_tilt_max.get());
+	inp_signal = _input_source.get();
 }
 
 float
@@ -329,7 +332,7 @@ MulticopterAttitudeControl::Run()
 				_man_y_input_filter.reset(0.f);
 			}
 
-			Vector3f rates_sp = _attitude_control.update(q);
+			Vector3f rates_sp = _attitude_control.update(q, inp_signal,rel_time,start_time);
 
 			const hrt_abstime now = hrt_absolute_time();
 			autotune_attitude_control_status_s pid_autotune;
@@ -351,7 +354,8 @@ MulticopterAttitudeControl::Run()
 			v_rates_sp.yaw = rates_sp(2);
 			_thrust_setpoint_body.copyTo(v_rates_sp.thrust_body);
 			v_rates_sp.timestamp = hrt_absolute_time();
-
+			v_rates_sp.input_att_ref=inp_signal;
+			v_rates_sp.rel_time=rel_time;
 			_v_rates_sp_pub.publish(v_rates_sp);
 		}
 

@@ -86,7 +86,7 @@ public:
 	 * @return [-1,1] normalized torque vector to apply to the vehicle
 	 */
 	matrix::Vector3f update(const matrix::Vector3f &rate, const matrix::Vector3f &rate_sp,
-				const matrix::Vector3f &angular_accel, const float dt, const bool landed);
+				const matrix::Vector3f &angular_accel, const float dt, const bool landed,const float tilt_sp);
 
 	/**
 	 * Set the integral term to 0 to prevent windup

@@ -224,7 +224,7 @@ private:
 	 * Thrust can be reduced to unsaturate the upper side.
 	 * @see mix_yaw() for the exact yaw behavior.
 	 */
-	inline void mix_airmode_disabled(float roll, float pitch, float yaw, float thrust, float *outputs);
+	inline void mix_airmode_disabled(float roll, float pitch, float yaw, float thrust, float f1, float f2, float f3, float f4, int armf,float *outputs);
 
 	/**
 	 * Mix yaw by updating an existing output vector (that already contains roll/pitch/thrust).

@@ -86,6 +86,15 @@ public:
 private:
 	void Run() override;
 
+	const float R1NUM[6]={0.0f,  0.18950f,  0.0490f, -0.2340f,   -0.18950f, 0.0f};
+	const float R2NUM[6]={0.0f, -0.1660f,  -0.0490f,  0.1560f ,   0.16600f, 0.0f};
+	const float R3NUM[6]={0.0f, -0.18950f,  0.0490f, -0.2340f ,   0.18950f, 0.0f};
+	const float R4NUM[6]={0.0f,  0.1660f,  -0.04900f, 0.15600f , -0.16600f, 0.0f};
+
+	matrix::Matrix<float, 3U, 2U> R1;
+	matrix::Matrix<float, 3U, 2U> R2;
+	matrix::Matrix<float, 3U, 2U> R3;
+	matrix::Matrix<float, 3U, 2U> R4;
 	/**
 	 * initialize some vectors/matrices from parameters
 	 */
@@ -113,11 +122,17 @@ private:
 	uORB::SubscriptionCallbackWorkItem _vehicle_angular_velocity_sub{this, ORB_ID(vehicle_angular_velocity)};
 
 	uORB::Publication<actuator_controls_s>		_actuators_0_pub;
+	//uORB::Publication<actuator_controls_s>		_actuators_0_pub{ORB_ID(actuator_controls_0)};		//input for the mixer (roll,pitch,yaw,thrust)
+	uORB::Publication<actuator_controls_s>		_actuators_1_pub{ORB_ID(actuator_controls_1)};
 	uORB::Publication<actuator_controls_status_s>	_actuator_controls_status_0_pub{ORB_ID(actuator_controls_status_0)};
 	uORB::PublicationMulti<rate_ctrl_status_s>	_controller_status_pub{ORB_ID(rate_ctrl_status)};
 	uORB::Publication<vehicle_rates_setpoint_s>	_v_rates_sp_pub{ORB_ID(vehicle_rates_setpoint)};
 	uORB::Publication<vehicle_thrust_setpoint_s>	_vehicle_thrust_setpoint_pub{ORB_ID(vehicle_thrust_setpoint)};
 	uORB::Publication<vehicle_torque_setpoint_s>	_vehicle_torque_setpoint_pub{ORB_ID(vehicle_torque_setpoint)};
+	float s1_last{0.0f};
+	float s2_last{0.0f};
+	float s3_last{0.0f};
+	float s4_last{0.0f};
 
 	orb_advert_t _mavlink_log_pub{nullptr};
 
@@ -133,8 +148,11 @@ private:
 	perf_counter_t	_loop_perf;			/**< loop duration performance counter */
 
 	matrix::Vector3f _rates_sp;			/**< angular rates setpoint */
+        int32_t inp_type;
+	float rel_time;
 
 	float		_thrust_sp{0.0f};		/**< thrust setpoint */
+	float          _tilt_sp{0.0f};
 
 	hrt_abstime _last_run{0};
 

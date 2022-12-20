@@ -55,10 +55,17 @@ void RateControl::setSaturationStatus(const Vector<bool, 3> &saturation_positive
 }
 
 Vector3f RateControl::update(const Vector3f &rate, const Vector3f &rate_sp, const Vector3f &angular_accel,
-			     const float dt, const bool landed)
+			     const float dt, const bool landed,const float tilt_sp)
 {
 	// angular rates error
 	Vector3f rate_error = rate_sp - rate;
+
+	float c_tilt_sp=math::constrain(tilt_sp,0.0f,1.571f);
+
+	Vector3f _gain_p_add;
+	_gain_p_add(0)=0.5f*c_tilt_sp/1.5708f;
+	_gain_p_add(1)=0.5f*c_tilt_sp/1.5708f;
+	_gain_p_add(2)=0.0f;
 
 	// PID control with feed forward
 	const Vector3f torque = _gain_p.emult(rate_error) + _rate_int - _gain_d.emult(angular_accel) + _gain_ff.emult(rate_sp);
